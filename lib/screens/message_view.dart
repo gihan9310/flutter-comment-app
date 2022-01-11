@@ -1,6 +1,5 @@
 import 'package:comment_app/controllers/comment_controller.dart';
 import 'package:comment_app/controllers/manage_comment.dart';
-import 'package:comment_app/dtos/comment_dto.dart';
 import 'package:comment_app/screens/widgets/comment_display_box.dart';
 import 'package:comment_app/screens/widgets/comment_input.dart';
 import 'package:comment_app/screens/widgets/comment_liks.dart';
@@ -23,9 +22,10 @@ class MessageView extends StatefulWidget {
     Key? key,
     this.childWidget,
     required this.currentUserId,
+    required this.commentController,
   }) : super(key: key);
 
-  ManageComment commentController = CommentController();
+  final ManageComment commentController;
   final Widget? childWidget;
   final String currentUserId;
 
@@ -75,8 +75,7 @@ class _MessageViewState extends State<MessageView> {
                                       CommenterImage(
                                         size: 50,
                                         StrIamgeUrl:
-                                            'https://www.famousbirthdays.com/faces/leone-sunny-image.jpg',
-                                        // "${widget.commentController.listOfComments[index].userImgUrl}",
+                                            '${widget.commentController.listOfComments[index].userDispalyName}',
                                         tempatyName:
                                             "${widget.commentController.listOfComments[index].userDispalyName}",
                                       ),
@@ -96,6 +95,7 @@ class _MessageViewState extends State<MessageView> {
                                                 comment: widget
                                                     .commentController
                                                     .listOfComments[index],
+                                                manageComment: widget.commentController,
                                               ),
                                               SizedBox(
                                                 height: 5,
@@ -106,7 +106,27 @@ class _MessageViewState extends State<MessageView> {
                                                         .spaceBetween,
                                                 children: [
                                                   LikeReply(
-                                                    likeOnTap: () {},
+                                                    likeOnTap: () {
+                                                      setState(() {
+                                                        MyToolTips.likeSelect(
+                                                          emojies: widget
+                                                              .commentController
+                                                              .getEmojiesForLike(),
+                                                          context: context,
+                                                          commentController: widget
+                                                              .commentController,
+                                                          mainId: widget
+                                                              .commentController
+                                                              .mainCommnetId,
+                                                          subCommentId: widget
+                                                              .commentController
+                                                              .subCommentId,
+                                                          isReply: true,
+                                                          userId: widget
+                                                              .currentUserId,
+                                                        );
+                                                      });
+                                                    },
                                                     replyOnTap: () {
                                                       setState(() {
                                                         widget.commentController
@@ -121,11 +141,6 @@ class _MessageViewState extends State<MessageView> {
                                                                 .listOfComments[
                                                                     index]
                                                                 .commentedBy;
-                                                        // widget
-                                                        //         .commentController
-                                                        //         .textController
-                                                        //         .text =
-                                                        //     '@${widget.commentController.replyTo} ';
                                                       });
                                                     },
                                                     commentController: widget
@@ -197,6 +212,7 @@ class _MessageViewState extends State<MessageView> {
                                                     .commentController
                                                     .listOfComments[index]
                                                     .replies[x],
+                                                manageComment: widget.commentController,
                                               ),
                                             ),
                                           ],
@@ -231,30 +247,28 @@ class _MessageViewState extends State<MessageView> {
                                                   });
                                                 },
                                                 replyOnTap: () {
-                                                  setState(() {
-                                                    widget.commentController
-                                                        .replyYes = true;
-                                                    widget.commentController
-                                                            .subCommnetReplyYes =
-                                                        true;
-                                                    widget.commentController
-                                                        .mainCommnetId = index;
-                                                    widget.commentController
-                                                        .subCommentId = x;
-                                                    widget.commentController
-                                                            .replyTo =
-                                                        widget
-                                                            .commentController
-                                                            .listOfComments[
-                                                                index]
-                                                            .replies[x]
-                                                            .commentedBy;
-                                                    // widget
-                                                    //         .commentController
-                                                    //         .textController
-                                                    //         .text =
-                                                    //     '@${widget.commentController.replyTo} ';
-                                                  });
+                                                  setState(
+                                                    () {
+                                                      widget.commentController
+                                                          .replyYes = true;
+                                                      widget.commentController
+                                                              .subCommnetReplyYes =
+                                                          true;
+                                                      widget.commentController
+                                                              .mainCommnetId =
+                                                          index;
+                                                      widget.commentController
+                                                          .subCommentId = x;
+                                                      widget.commentController
+                                                              .replyTo =
+                                                          widget
+                                                              .commentController
+                                                              .listOfComments[
+                                                                  index]
+                                                              .replies[x]
+                                                              .commentedBy;
+                                                    },
+                                                  );
                                                 },
                                                 mainCommentId: index,
                                                 isReply: true,
@@ -295,127 +309,127 @@ class _MessageViewState extends State<MessageView> {
                 ),
               ),
               Container(
-                  width: size.width,
-                  padding: EdgeInsets.all(5),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(
-                        width: 1.0,
-                        color: kBlack.withOpacity(0.5),
-                      ),
+                width: size.width,
+                padding: EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      width: 1.0,
+                      color: kBlack.withOpacity(0.5),
                     ),
                   ),
-                  // height: 60,
-                  child: Column(
-                    children: [
-                      if (widget.commentController.replyTo != null)
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            CustomText(
-                              text:
-                                  "Replying to : ${widget.commentController.replyTo}",
-                              fontWeight: FontWeight.w900,
-                            ),
-                            SizedBox(
-                              width: 20,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  widget.commentController.replyCancel();
-                                });
-                              },
-                              child: Icon(Icons.cancel_sharp),
-                            )
-                          ],
-                        ),
-                      if (widget.commentController.replyTo != null)
-                        SizedBox(
-                          height: 10,
-                        ),
+                ),
+                // height: 60,
+                child: Column(
+                  children: [
+                    if (widget.commentController.replyTo != null)
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
-                          Expanded(
-                            child: CommentInput(
-                              controller:
-                                  widget.commentController.textController,
-                              showImage: widget.commentController.canAddImage,
-                              tagTO: widget.commentController.replyTo,
-                              loadImage: () async {
-                                var result = (await ManageImageComment()
-                                    .getImageFormGalary())!;
-
-                                if (result.isNotEmpty) {
-                                  // widget.commentController.listOfImage=[];
-                                  // widget.commentController.listOfImage =result;
-
-                                  try {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            new ViewImageComment(
-                                          imageList: result,
-                                          commentController:
-                                              widget.commentController,
-                                          userId: widget.currentUserId,
-                                        ),
-                                      ),
-                                    );
-                                  } catch (e) {
-                                    print('$e');
-                                  }
-                                }
-                              },
-                            ),
+                          CustomText(
+                            text:
+                                "Replying to : ${widget.commentController.replyTo}",
+                            fontWeight: FontWeight.w900,
                           ),
                           SizedBox(
-                            width: 5,
+                            width: 20,
                           ),
-                          CustomRoundButton(
+                          InkWell(
                             onTap: () {
                               setState(
                                 () {
-                                  var value = widget
-                                      .commentController.textController.text;
-                                  if (value.trim().isEmpty) return;
-                                  if (widget.commentController.replyYes) {
-                                    if (widget
-                                            .commentController.mainCommnetId ==
-                                        -1) {
-                                      return;
-                                    }
-                                    widget.commentController.addSubComment(
-                                        comment: value,
-                                        mainCommentId: widget
-                                            .commentController.mainCommnetId);
-                                  } else if (widget
-                                      .commentController.subCommnetReplyYes) {
-                                    if (widget.commentController.subCommentId ==
-                                            -1 ||
-                                        widget.commentController
-                                                .mainCommnetId ==
-                                            -1) return;
-                                    widget.commentController.replyToSubCommnet(
-                                        comment: value,
-                                        mainCommentId: widget
-                                            .commentController.mainCommnetId,
-                                        subCommentId: widget
-                                            .commentController.subCommentId);
-                                  } else {
-                                    widget.commentController
-                                        .addMainComment(comment: value);
-                                  }
-                                  widget.commentController.changCommentState();
+                                  widget.commentController.replyCancel();
                                 },
                               );
                             },
+                            child: Icon(Icons.cancel_sharp),
                           )
                         ],
                       ),
-                    ],
-                  )),
+                    if (widget.commentController.replyTo != null)
+                      SizedBox(
+                        height: 10,
+                      ),
+                    Row(
+                      children: [
+                        Expanded(
+                          child: CommentInput(
+                            controller: widget.commentController.textController,
+                            showImage: widget.commentController.canAddImage,
+                            tagTO: widget.commentController.replyTo,
+                            loadImage: () async {
+                              var result = (await ManageImageComment()
+                                  .getImageFormGalary())!;
+
+                              if (result.isNotEmpty) {
+                                // widget.commentController.listOfImage=[];
+                                // widget.commentController.listOfImage =result;
+
+                                try {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          new ViewImageComment(
+                                        imageList: result,
+                                        commentController:
+                                            widget.commentController,
+                                        userId: widget.currentUserId,
+                                      ),
+                                    ),
+                                  );
+                                } catch (e) {
+                                  print('$e');
+                                }
+                              }
+                            },
+                          ),
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        CustomRoundButton(
+                          onTap: () {
+                            setState(
+                              () {
+                                var value = widget
+                                    .commentController.textController.text;
+                                if (value.trim().isEmpty) return;
+                                if (widget.commentController.replyYes) {
+                                  if (widget.commentController.mainCommnetId ==
+                                      -1) {
+                                    return;
+                                  }
+                                  widget.commentController.addSubComment(
+                                      comment: value,
+                                      mainCommentId: widget
+                                          .commentController.mainCommnetId);
+                                } else if (widget
+                                    .commentController.subCommnetReplyYes) {
+                                  if (widget.commentController.subCommentId ==
+                                          -1 ||
+                                      widget.commentController.mainCommnetId ==
+                                          -1) return;
+                                  widget.commentController.replyToSubCommnet(
+                                      comment: value,
+                                      mainCommentId: widget
+                                          .commentController.mainCommnetId,
+                                      subCommentId: widget
+                                          .commentController.subCommentId);
+                                } else {
+                                  widget.commentController
+                                      .addMainComment(comment: value);
+                                }
+                                widget.commentController.changCommentState();
+                              },
+                            );
+                          },
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ),
             ],
           ),
         ),

@@ -14,18 +14,23 @@ class TapImage extends StatelessWidget {
 
   final SubCommentDTO comment;
   final int index;
+
   @override
   Widget build(BuildContext context) {
-    var size =MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return InkWell(
-      onTap:(){
-        CommentImage.showImage(context: context, imageList:  comment.commentImgUrl);
-      } ,
+      onTap: () {
+        CommentImage.showImage(
+          context: context,
+          imageList: comment.commentImgUrl,
+          tapImageId: index,
+        );
+      },
       child: Stack(
         children: [
           Container(
             height: 150,
-            width: comment.commentImgUrl.length==1 ?size.width :150 ,
+            width: comment.commentImgUrl.length == 1 ? size.width : 150,
             child: NetworkImageWithErrorBuilder(
                 userImgUrl: comment.commentImgUrl.length > 0
                     ? comment.commentImgUrl[index]
@@ -39,12 +44,11 @@ class TapImage extends StatelessWidget {
                 height: 30,
                 decoration: BoxDecoration(
                     color: kBlack.withOpacity(0.6),
-                    borderRadius: BorderRadius.circular(10)
-
-                ),
+                    borderRadius: BorderRadius.circular(10)),
                 child: Center(
                   child: CustomText(
-                    text: "${comment.commentImgUrl.length==3 ?comment.commentImgUrl.length - 2: comment.commentImgUrl.length - 4}+",
+                    text:
+                        "${comment.commentImgUrl.length == 3 ? comment.commentImgUrl.length - 2 : comment.commentImgUrl.length - 4}+",
                     fontColor: Colors.white,
                     fontSize: 25,
                     fontWeight: FontWeight.bold,
@@ -57,5 +61,3 @@ class TapImage extends StatelessWidget {
     );
   }
 }
-
-

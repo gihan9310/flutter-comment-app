@@ -1,3 +1,5 @@
+import 'package:comment_app/controllers/comment_controller.dart';
+import 'package:comment_app/controllers/manage_comment.dart';
 import 'package:comment_app/dtos/comment_dto.dart';
 import 'package:comment_app/screens/message_view.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +20,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: MessageView(currentUserId: "XXXXXXXX001",),
+      home: MessageView(currentUserId: "XXXXXXXX001",commentController: CommentController(),),
     );
   }
 }

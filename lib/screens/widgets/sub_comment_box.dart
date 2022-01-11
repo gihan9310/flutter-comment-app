@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:comment_app/controllers/manage_comment.dart';
 import 'package:comment_app/dtos/sub_comment_dto.dart';
 import 'package:comment_app/screens/widgets/custom_text.dart';
 import 'package:comment_app/screens/widgets/tab_image.dart';
@@ -9,10 +10,12 @@ import 'package:flutter/material.dart';
 class SubCommentDisplayBox extends StatelessWidget {
   const SubCommentDisplayBox({
     required this.comment,
+    required this.manageComment,
     Key? key,
   }) : super(key: key);
 
   final SubCommentDTO comment;
+  final ManageComment manageComment;
 
   @override
   Widget build(BuildContext context) {
@@ -22,14 +25,15 @@ class SubCommentDisplayBox extends StatelessWidget {
       padding: EdgeInsets.only(top: 8, left: 15, bottom: 8, right: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: Colors.teal.withOpacity(0.1),
+        color: manageComment.subCommentBoxColor.withOpacity(0.1),
         boxShadow: [
-          BoxShadow(
-            color: Colors.brown.withOpacity(0.5),
-            spreadRadius: 5,
-            blurRadius: 7,
-            offset: Offset(0, 3), // changes position of shadow
-          ),
+          if (manageComment.subBoxshowBoxShadow)
+            BoxShadow(
+              color: manageComment.subCommentBoxColor.withOpacity(0.2),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(1, 3), // changes position of shadow
+            ),
         ],
       ),
       child: Column(
@@ -43,13 +47,13 @@ class SubCommentDisplayBox extends StatelessWidget {
               children: [
                 CustomText(
                   text: comment.commentedBy,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
+                  fontWeight: manageComment.subUserNameFontWeight,
+                  fontSize: manageComment.subCommentUserNameFontSize,
                 ),
                 CustomText(
                   text: comment.getMainCommentTime(),
-                  fontWeight: FontWeight.bold,
-                  fontSize: 11,
+                  fontWeight: manageComment.subUserNameFontWeight,
+                  fontSize: manageComment.tagToFontSize,
                 ),
               ],
             ),
@@ -66,7 +70,10 @@ class SubCommentDisplayBox extends StatelessWidget {
                 if (comment.tagTo != null)
                   TextSpan(
                     text: '${comment.tagTo} ',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13),
+                    style: TextStyle(
+                      fontWeight: manageComment.tagToWeight,
+                      fontSize: manageComment.tagToFontSize,
+                    ),
                   ),
                 TextSpan(text: '${comment.comment}'),
               ],

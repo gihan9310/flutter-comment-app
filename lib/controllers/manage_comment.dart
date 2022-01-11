@@ -1,7 +1,10 @@
+import 'dart:ffi';
+
 import 'package:comment_app/dtos/comment_dto.dart';
 import 'package:comment_app/dtos/commnet_liks.dart';
 import 'package:comment_app/dtos/liked_users.dart';
 import 'package:comment_app/dtos/sub_comment_dto.dart';
+import 'package:comment_app/utils/colors_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:images_picker/images_picker.dart';
 
@@ -19,8 +22,21 @@ class ManageComment {
   String? replyTo = null;
   List<Media> listOfImage = [];
 
-  // List<Media> listOfImageDont =[];
-  // ManageComment(this.userId);
+  //decoration properties
+  Color mainCommentBoxColor  =kGreen;
+  double mainBoxFontSize = 12.0 ;
+  double mainUserNameFontSize = 13.0 ;
+  FontWeight mainUserNameFontWeight =FontWeight.w800;
+  bool mainBoxshowBoxShadow =true;
+
+  //SUB COMMENT BOX PROPERTIES
+  Color subCommentBoxColor  =kBlack;
+  double subBoxFontSize = 12.0 ;
+  double subCommentUserNameFontSize = 13.5 ;
+  double tagToFontSize = 12.0 ;
+  FontWeight subUserNameFontWeight =FontWeight.bold;
+  FontWeight tagToWeight =FontWeight.w900;
+  bool subBoxshowBoxShadow =false;
 
   addMainComment({required String comment, String? postId}) {
     var c = CommentDTO(
@@ -253,7 +269,6 @@ class ManageComment {
         changCommentState();
       }
     } catch (e) {
-      print('===========>$e');
       changCommentState();
     }
   }
@@ -268,7 +283,6 @@ class ManageComment {
   }
 
   String getImageUril(int index, List<Media> list) {
-    print('====>>>>>> ${list[index].thumbPath}');
     return '${list[index].thumbPath}';
   }
 

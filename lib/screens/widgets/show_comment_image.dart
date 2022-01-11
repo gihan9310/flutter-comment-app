@@ -1,5 +1,6 @@
-import 'package:comment_app/screens/widgets/network_image.dart';
-import 'package:comment_app/utils/colors_utils.dart';
+import 'dart:io';
+
+import 'package:comment_app/screens/widgets/custom_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:proste_dialog/proste_dialog.dart';
@@ -10,6 +11,7 @@ class CommentImage {
     required BuildContext context,
     SuperTooltip? tooltip,
     required List<String> imageList,
+    required int tapImageId,
   }) {
     DialogTipType _tipType = DialogTipType.success;
     late Animation _animation;
@@ -20,9 +22,9 @@ class CommentImage {
       builder: (_) => ProsteCustomDialog(
         insetPadding: EdgeInsets.zero,
         dialogRadius: 5,
-
         content: ViewImageSlider(
           imageList: imageList,
+          index: tapImageId,
         ),
         titlePadding: EdgeInsets.only(top: 0),
         contentPadding: EdgeInsets.only(top: 0),
@@ -38,10 +40,11 @@ class CommentImage {
 class ViewImageSlider extends StatefulWidget {
   ViewImageSlider({
     required this.imageList,
+    this.index =0,
     Key? key,
   }) : super(key: key);
   final List<String> imageList;
-  int index = 0;
+  int index;
 
   @override
   State<ViewImageSlider> createState() => _ViewImageSliderState();
@@ -50,53 +53,45 @@ class ViewImageSlider extends StatefulWidget {
 class _ViewImageSliderState extends State<ViewImageSlider> {
   @override
   Widget build(BuildContext context) {
-    var size =MediaQuery.of(context).size;
+    var size = MediaQuery.of(context).size;
     return Container(
-      height: 500,
-      child: Column(
-        children: [
-          if (!widget.imageList.isEmpty)
-            Container(
-              height: 470,
-              width: size.width,
-              color: kBlack,
-              child: NetworkImageWithErrorBuilder(
-                userImgUrl:widget.imageList[widget.index]
+      height: 300,
+      child: PageView.builder(
+        onPageChanged: (page){
+          setState(() {
+            widget.index =page;
+          });
+        },
+        itemCount: widget.imageList.length,
+        physics: BouncingScrollPhysics(),
+        pageSnapping: true,
+        itemBuilder: (context, i ) {
+          return Container(
+            height: 300,
+            width: size.width,
+            decoration: BoxDecoration(
+              image: DecorationImage(
+                image: Image.file(
+                  File(widget.imageList[widget.index]),
+                  errorBuilder: (context, exception, stackTrace) {
+                    return Image.network(
+                      widget.imageList[widget.index],
+                      fit: BoxFit.fill,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Container(
+                          color: Colors.amber,
+                          alignment: Alignment.center,
+                          child: CustomText(text: "Error"),
+                        );
+                      },
+                    );
+                  },
+                ).image,
+                fit: BoxFit.fill,
               ),
             ),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                InkWell(
-                  child: Icon(
-                    Icons.skip_next_rounded,
-                    size: 30,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      if ((widget.imageList.length - 1) == widget.index) return;
-                      ++widget.index;
-                    });
-                  },
-                ),
-                InkWell(
-                  child: Icon(
-                    Icons.skip_previous,
-                    size: 30,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      if (0 == widget.index) return;
-                      --widget.index;
-                    });
-                  },
-                )
-              ],
-            ),
-          )
-        ],
+          );
+        },
       ),
     );
   }

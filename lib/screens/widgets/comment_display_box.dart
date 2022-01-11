@@ -1,3 +1,4 @@
+import 'package:comment_app/controllers/manage_comment.dart';
 import 'package:comment_app/dtos/comment_dto.dart';
 import 'package:comment_app/screens/widgets/custom_text.dart';
 import 'package:comment_app/screens/widgets/ontap_main_image.dart';
@@ -8,10 +9,12 @@ import 'package:flutter/rendering.dart';
 class CommentDisplayBox extends StatelessWidget {
   const CommentDisplayBox({
     required this.comment,
+    required this.manageComment,
     Key? key,
   }) : super(key: key);
 
   final CommentDTO comment;
+  final ManageComment manageComment;
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +24,16 @@ class CommentDisplayBox extends StatelessWidget {
       padding: EdgeInsets.only(top: 8, left: 15, bottom: 8, right: 10),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(30),
-        color: Colors.brown.shade800.withOpacity(0.1),
+        color: manageComment.mainCommentBoxColor.withOpacity(0.1),
+        boxShadow: [
+          if (manageComment.mainBoxshowBoxShadow)
+            BoxShadow(
+              color: manageComment.subCommentBoxColor.withOpacity(0.2),
+              spreadRadius: 5,
+              blurRadius: 7,
+              offset: Offset(1, 3), // changes position of shadow
+            ),
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -34,8 +46,8 @@ class CommentDisplayBox extends StatelessWidget {
               children: [
                 CustomText(
                   text: comment.commentedBy,
-                  fontWeight: FontWeight.w800,
-                  fontSize: 13,
+                  fontWeight: manageComment.mainUserNameFontWeight,
+                  fontSize: manageComment.mainUserNameFontSize,
                 ),
                 CustomText(
                   text: comment.getMainCommentTime(),
@@ -57,7 +69,7 @@ class CommentDisplayBox extends StatelessWidget {
                 if (comment.tagTo != null)
                   TextSpan(
                     text: '${comment.tagTo} ',
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: manageComment.mainBoxFontSize),
                   ),
                 TextSpan(text: '${comment.comment}'),
               ],
@@ -101,6 +113,9 @@ class CommentDisplayBox extends StatelessWidget {
                             : comment.commentImgUrl.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20)
+                    ),
                     margin: EdgeInsets.all(2),
                     child: TapMainImage(
                       comment: comment,
