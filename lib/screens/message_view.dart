@@ -75,7 +75,7 @@ class _MessageViewState extends State<MessageView> {
                                       CommenterImage(
                                         size: 50,
                                         StrIamgeUrl:
-                                            '${widget.commentController.listOfComments[index].userDispalyName}',
+                                            '${widget.commentController.listOfComments[index].userImgUrl}',
                                         tempatyName:
                                             "${widget.commentController.listOfComments[index].userDispalyName}",
                                       ),

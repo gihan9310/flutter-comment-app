@@ -23,7 +23,7 @@ class SubCommentDTO {
     required this.commentedBy,
     required this.userId,
     required this.userDispalyName,
-    this.userImgUrl,
+    this.userImgUrl="",
     this.tagTo,
     required this.commentedDate,
     required this.comment,

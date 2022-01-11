@@ -15,22 +15,24 @@ class NetworkImageWithErrorBuilder extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.network(
-      '${userImgUrl}', // this image doesn't exist
-      fit: BoxFit.cover,
-      errorBuilder: (context, error, stackTrace) {
-        return Image.file(
-          File('${userImgUrl}'),
-          fit: BoxFit.cover,
-          errorBuilder: (context, error, stackTrace) {
-            return Container(
-              color: Colors.amber,
-              alignment: Alignment.center,
-              child:CustomText(text: "${noImageShowText}"),
-            );
-          } ,
-        );
-      },
+    return Container(
+      child: Image.network(
+        '${userImgUrl}', // this image doesn't exist
+        fit: BoxFit.cover,
+        errorBuilder: (context, error, stackTrace) {
+          return Image.file(
+            File('${userImgUrl}'),
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Container(
+                color: Colors.amber,
+                alignment: Alignment.center,
+                child:CustomText(text: "${noImageShowText}"),
+              );
+            } ,
+          );
+        },
+      ),
     );
   }
 }

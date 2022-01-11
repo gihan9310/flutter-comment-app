@@ -7,6 +7,7 @@ import 'package:comment_app/screens/widgets/custom_text.dart';
 import 'package:comment_app/utils/colors_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:images_picker/images_picker.dart';
+import 'package:photo_view/photo_view.dart';
 
 class ViewImageComment extends StatefulWidget {
    ViewImageComment({
@@ -227,12 +228,16 @@ class FileImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Image.file(
-      File(widget.commentController.getImageUril(index ,widget.imageList,)),
-      fit: BoxFit.fitHeight,
-      errorBuilder: (context,error,stackTrace ){
-        return CustomText(text: "text");
-      },
+    return PhotoView(
+      tightMode: true,
+      imageProvider: Image.file(
+        File(widget.commentController.getImageUril(index ,widget.imageList,)),
+        fit: BoxFit.fitHeight,
+        errorBuilder: (context,error,stackTrace ){
+          return CustomText(text: "text");
+        },
+      ).image,
     );
+
   }
 }

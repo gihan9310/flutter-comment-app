@@ -1,4 +1,5 @@
 import 'package:comment_app/dtos/sub_comment_dto.dart';
+import 'package:comment_app/screens/widgets/commented_image_zoom.dart';
 import 'package:comment_app/screens/widgets/custom_text.dart';
 import 'package:comment_app/screens/widgets/network_image.dart';
 import 'package:comment_app/screens/widgets/show_comment_image.dart';
@@ -20,11 +21,21 @@ class TapImage extends StatelessWidget {
     var size = MediaQuery.of(context).size;
     return InkWell(
       onTap: () {
-        CommentImage.showImage(
-          context: context,
-          imageList: comment.commentImgUrl,
-          tapImageId: index,
+        // CommentImage.showImage(
+        //   context: context,
+        //   imageList: comment.commentImgUrl,
+        //   tapImageId: index,
+        // );
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CommentedImageZoomView(
+              imageList: comment.commentImgUrl,
+              index: index,
+            ),
+          ),
         );
+        ;
       },
       child: Stack(
         children: [
